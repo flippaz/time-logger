@@ -1,0 +1,8 @@
+.tmp/
+.vs/
+bin/
+logs/
+obj/
+*.*proj.user
+*.DotSettings.user
+.history/
