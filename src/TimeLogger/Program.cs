@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -13,16 +7,13 @@ using Serilog.Events;
 using Serilog.Extensions.Logging;
 using Serilog.Formatting.Json;
 using Serilog.Sinks.RollingFileAlternate;
+using System.IO;
+using System.Net;
 
 namespace TimeLogger
 {
     public class Program
     {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
-
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
@@ -41,6 +32,11 @@ namespace TimeLogger
                         .ConfigureLogging((hostingContext, logging) =>
                             logging.AddProvider(CreateLoggerProvider(hostingContext.Configuration)));
                 });
+
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
 
         private static SerilogLoggerProvider CreateLoggerProvider(IConfiguration configuration)
         {

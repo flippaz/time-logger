@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using TimeLogger.Repository.Context;
 using TimeLogger.Repository.Entities;
 
@@ -13,6 +15,14 @@ namespace TimeLogger.Repository
             _context = context;
         }
 
+        public IEnumerable<Timesheet> GetTimesheet(DateTime startDate, DateTime endDate)
+        {
+            return _context.TimeSheets
+                .Where(t =>
+                    t.LogDateTime > startDate.Date
+                    && t.LogDateTime < endDate.Date);
+        }
+
         public void InsertLogTime(DateTime logDateTime, string action)
         {
             _context.TimeSheets.Add(new Timesheet
@@ -20,6 +30,22 @@ namespace TimeLogger.Repository
                 Action = action,
                 LogDateTime = logDateTime
             });
+
+            _context.SaveChanges();
+        }
+
+        public void UpdateLogTime(int id, DateTime logDateTime, string comment)
+        {
+            var timeSheet = _context.TimeSheets.SingleOrDefault(t => t.Id == id);
+
+            if (timeSheet == null)
+            {
+                return;
+            }
+
+            timeSheet.LogDateTime = logDateTime;
+            timeSheet.Comments = comment;
+            timeSheet.ModifiedDateTime = DateTime.Now.ToLocalTime();
 
             _context.SaveChanges();
         }

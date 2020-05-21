@@ -16,10 +16,20 @@ namespace TimeLogger.Controllers
             _timeLoggerService = timeLoggerService;
         }
 
+        [HttpGet]
+        public IActionResult GetTimeSheets([FromQuery]DateTime? startDate, [FromQuery] DateTime? endDate)
+        {
+            var timeSheets = _timeLoggerService.GetTimesheet(
+                startDate ?? DateTime.Now.ToLocalTime().AddDays(-7),
+                endDate ?? DateTime.Now.ToLocalTime().AddDays(1));
+
+            return Ok(timeSheets);
+        }
+
         [HttpPost("in")]
         public IActionResult PostInTime([FromBody] LogTimeRequest request)
         {
-            if (request.LogTime == null)
+            if (request == null || request?.LogTime == null)
             {
                 request.LogTime = DateTime.Now.ToLocalTime();
             }
@@ -32,12 +42,25 @@ namespace TimeLogger.Controllers
         [HttpPost("in")]
         public IActionResult PostOutTime([FromBody] LogTimeRequest request)
         {
-            if (request.LogTime == null)
+            if (request == null || request?.LogTime == null)
             {
                 request.LogTime = DateTime.Now.ToLocalTime();
             }
 
             _timeLoggerService.LogOutTime(request);
+
+            return Ok();
+        }
+
+        [HttpPost("{id}")]
+        public IActionResult PostUpdateTime(int id, [FromBody] LogTimeRequest request)
+        {
+            if (request == null || request?.LogTime == null)
+            {
+                request.LogTime = DateTime.Now.ToLocalTime();
+            }
+
+            _timeLoggerService.UpdateTime(id, request);
 
             return Ok();
         }

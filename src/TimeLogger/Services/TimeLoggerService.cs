@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using TimeLogger.Models;
 using TimeLogger.Repository;
+using TimeLogger.Repository.Entities;
 
 namespace TimeLogger.Services
 {
@@ -13,6 +15,11 @@ namespace TimeLogger.Services
             _repository = repository;
         }
 
+        public IEnumerable<Timesheet> GetTimesheet(DateTime startDate, DateTime endDate)
+        {
+            return _repository.GetTimesheet(startDate, endDate);
+        }
+
         public void LogInTime(LogTimeRequest request)
         {
             _repository.InsertLogTime((DateTime)request.LogTime, "LogIn");
@@ -21,6 +28,11 @@ namespace TimeLogger.Services
         public void LogOutTime(LogTimeRequest request)
         {
             _repository.InsertLogTime((DateTime)request.LogTime, "LogOut");
+        }
+
+        public void UpdateTime(int id, LogTimeRequest request)
+        {
+            _repository.UpdateLogTime(id, (DateTime)request.LogTime, request.Comment);
         }
     }
 }
