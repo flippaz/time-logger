@@ -15,6 +15,11 @@ namespace TimeLogger.Services
             _repository = repository;
         }
 
+        public void DeleteTime(int id)
+        {
+            _repository.DeleteTime(id);
+        }
+
         public IEnumerable<Timesheet> GetTimesheet(DateTime startDate, DateTime endDate)
         {
             return _repository.GetTimesheet(startDate, endDate);

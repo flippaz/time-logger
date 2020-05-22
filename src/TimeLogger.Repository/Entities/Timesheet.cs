@@ -12,6 +12,6 @@ namespace TimeLogger.Repository.Entities
 
         public DateTime LogDateTime { get; set; }
 
-        public DateTime ModifiedDateTime { get; set; }
+        public DateTime? ModifiedDateTime { get; set; }
     }
 }

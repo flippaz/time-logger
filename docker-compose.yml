@@ -1,0 +1,12 @@
+version: "3.5"
+    
+services:
+  postgres-local:
+    image: postgres:12.3-alpine
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=TimeLogger

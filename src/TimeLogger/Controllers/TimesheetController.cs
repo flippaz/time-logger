@@ -7,17 +7,30 @@ namespace TimeLogger.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TmesheetController : ControllerBase
+    public class TimesheetController : ControllerBase
     {
         private readonly ITimeLoggerService _timeLoggerService;
 
-        public TmesheetController(ITimeLoggerService timeLoggerService)
+        public TimesheetController(ITimeLoggerService timeLoggerService)
         {
             _timeLoggerService = timeLoggerService;
         }
 
+        [HttpDelete("{id}")]
+        public IActionResult DeleteTime(int id, [FromBody] LogTimeRequest request)
+        {
+            if (request == null || request?.LogTime == null)
+            {
+                request.LogTime = DateTime.Now.ToLocalTime();
+            }
+
+            _timeLoggerService.UpdateTime(id, request);
+
+            return Ok();
+        }
+
         [HttpGet]
-        public IActionResult GetTimeSheets([FromQuery]DateTime? startDate, [FromQuery] DateTime? endDate)
+        public IActionResult GetTimeSheets([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
         {
             var timeSheets = _timeLoggerService.GetTimesheet(
                 startDate ?? DateTime.Now.ToLocalTime().AddDays(-7),
@@ -39,7 +52,7 @@ namespace TimeLogger.Controllers
             return Ok();
         }
 
-        [HttpPost("in")]
+        [HttpPost("out")]
         public IActionResult PostOutTime([FromBody] LogTimeRequest request)
         {
             if (request == null || request?.LogTime == null)

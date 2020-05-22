@@ -7,7 +7,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{09EF3D0D-BA8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeLogger", "src\TimeLogger\TimeLogger.csproj", "{6A61A3E9-B9DB-4DAE-9D8A-4D039D837B60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeLogger.Repository", "src\TimeLogger.Repository\TimeLogger.Repository.csproj", "{3E1D7034-8594-4F25-8635-14FF3DDBFFC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeLogger.Repository", "src\TimeLogger.Repository\TimeLogger.Repository.csproj", "{3E1D7034-8594-4F25-8635-14FF3DDBFFC1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8FC34242-7AF6-4902-8464-C1EEB1DE739C}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

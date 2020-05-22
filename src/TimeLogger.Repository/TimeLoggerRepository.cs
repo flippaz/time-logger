@@ -15,6 +15,17 @@ namespace TimeLogger.Repository
             _context = context;
         }
 
+        public void DeleteTime(int id)
+        {
+            Timesheet timeSheet = _context.TimeSheets.SingleOrDefault(t => t.Id == id);
+
+            if (timeSheet != null)
+            {
+                _context.Remove(timeSheet);
+                _context.SaveChanges();
+            }
+        }
+
         public IEnumerable<Timesheet> GetTimesheet(DateTime startDate, DateTime endDate)
         {
             return _context.TimeSheets

@@ -7,6 +7,8 @@ namespace TimeLogger.Services
 {
     public interface ITimeLoggerService
     {
+        void DeleteTime(int id);
+
         IEnumerable<Timesheet> GetTimesheet(DateTime startDate, DateTime endDate);
 
         void LogInTime(LogTimeRequest request);

@@ -45,7 +45,8 @@ namespace TimeLogger
             services
                 .AddServiceOptions(Configuration)
                 .AddTimeLoggerService()
-                .AddRepository();
+                .AddRepository()
+                .AddSwagger();
 
             services.ConfigureSwaggerGen(options =>
                 options.CustomSchemaIds(x => x.FullName));
