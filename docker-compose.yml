@@ -10,3 +10,21 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=TimeLogger
+    volumes:
+      - data:/var/lib/postgresql/data
+
+  dotnet:
+    depends_on: [ "postgres-local" ]
+    build:
+       context: .
+    ports:
+      - 80:5000
+    restart: always
+    environment:
+       - ASPNETCORE_Environment=Prod
+       - TimeLogger_ConnectionString="Server=postgres-local;Database=TimeLogger;User Id=postgres;Password=root"
+    volumes:
+      - ./logs:/app/logs
+
+volumes:
+  data:
