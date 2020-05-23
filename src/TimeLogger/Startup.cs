@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
 using TimeLogger.Extensions;
 using TimeLogger.Repository;
 
@@ -17,11 +19,17 @@ namespace TimeLogger
 
         public IConfiguration Configuration { get; }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MigrateDatabase migrateDatabase, ILogger<Startup> logger)
         {
-            if (env.IsDevelopment())
+            try
             {
-                app.UseDeveloperExceptionPage();
+                migrateDatabase();
+            }
+            catch (Exception exc)
+            {
+                logger.LogError(0, exc, "Error during database migration");
+
+                throw;
             }
 
             app.UseSwagger();

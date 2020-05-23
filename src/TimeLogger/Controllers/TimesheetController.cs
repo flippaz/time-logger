@@ -16,7 +16,7 @@ namespace TimeLogger.Controllers
             _timeLoggerService = timeLoggerService;
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public IActionResult DeleteTime(int id, [FromBody] LogTimeRequest request)
         {
             if (request == null || request?.LogTime == null)
@@ -65,7 +65,7 @@ namespace TimeLogger.Controllers
             return Ok();
         }
 
-        [HttpPost("{id}")]
+        [HttpPost("update/{id}")]
         public IActionResult PostUpdateTime(int id, [FromBody] LogTimeRequest request)
         {
             if (request == null || request?.LogTime == null)

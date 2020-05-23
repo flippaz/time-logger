@@ -1,6 +1,7 @@
 .tmp/
 .vs/
 bin/
+data/
 logs/
 obj/
 *.*proj.user

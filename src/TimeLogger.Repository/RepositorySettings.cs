@@ -2,6 +2,6 @@
 {
     public class RepositorySettings
     {
-        public string ConnectionString { get; set; }
+        public ConnectionString ConnectionString { get; set; }
     }
 }

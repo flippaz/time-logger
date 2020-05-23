@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Npgsql;
 using System;
 using TimeLogger.Repository.Context;
 
@@ -13,10 +15,18 @@ namespace TimeLogger.Repository
             return services
                 .AddRepository(
                     (provider, builder) =>
-                        builder.UseNpgsql(
-                            provider.GetRequiredService<IOptions<RepositorySettings>>()
-                                .Value
-                                .ConnectionString));
+                        builder.UseNpgsql(ConstructConnectionString(provider)));
+        }
+
+        private static string ConstructConnectionString(IServiceProvider provider)
+        {
+            return new NpgsqlConnectionStringBuilder()
+            {
+                Host = provider.GetRequiredService<IOptions<RepositorySettings>>().Value.ConnectionString.PostgresServer,
+                Database = "TimeLogger",
+                Username = provider.GetRequiredService<IOptions<RepositorySettings>>().Value.ConnectionString.PostgresUser,
+                Password = provider.GetRequiredService<IOptions<RepositorySettings>>().Value.ConnectionString.PostgresPassword
+            }.ToString();
         }
 
         public static IServiceCollection AddRepository(this IServiceCollection services, Action<IServiceProvider, DbContextOptionsBuilder> optionsAction)

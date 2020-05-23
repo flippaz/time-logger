@@ -1,7 +1,7 @@
 version: "3.5"
     
 services:
-  postgres-local:
+  postgres:
     image: postgres:12.3-alpine
     ports:
       - 5432:5432
@@ -14,7 +14,7 @@ services:
       - data:/var/lib/postgresql/data
 
   dotnet:
-    depends_on: [ "postgres-local" ]
+    depends_on: [ "postgres" ]
     build:
        context: .
     ports:
@@ -22,7 +22,10 @@ services:
     restart: always
     environment:
        - ASPNETCORE_Environment=Prod
-       - TimeLogger_ConnectionString="Server=postgres-local;Database=TimeLogger;User Id=postgres;Password=root"
+       - TimeLogger_ConnectionString__PostgresServer=postgres
+       - TimeLogger_ConnectionString__PostgresUser=postgres
+       - TimeLogger_ConnectionString__PostgresPassword=root
+
     volumes:
       - ./logs:/app/logs
 
