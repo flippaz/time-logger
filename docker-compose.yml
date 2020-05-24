@@ -11,7 +11,7 @@ services:
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=TimeLogger
     volumes:
-      - data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
 
   dotnet:
     depends_on: [ "postgres" ]
@@ -30,4 +30,4 @@ services:
       - ./logs:/app/logs
 
 volumes:
-  data:
+  pgdata:

@@ -17,14 +17,9 @@ namespace TimeLogger.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-        public IActionResult DeleteTime(int id, [FromBody] LogTimeRequest request)
+        public IActionResult DeleteTime(int id)
         {
-            if (request == null || request?.LogTime == null)
-            {
-                request.LogTime = DateTime.Now.ToLocalTime();
-            }
-
-            _timeLoggerService.UpdateTime(id, request);
+            _timeLoggerService.DeleteTime(id);
 
             return Ok();
         }
