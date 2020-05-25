@@ -21,6 +21,7 @@ services:
       - 80:5000
     restart: always
     environment:
+       - TZ=Australia/Melbourne
        - ASPNETCORE_Environment=Prod
        - TimeLogger_ConnectionString__PostgresServer=postgres
        - TimeLogger_ConnectionString__PostgresUser=postgres

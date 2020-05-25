@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Internal;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using TimeLogger.Models;
 using TimeLogger.Services;
 
@@ -14,6 +17,19 @@ namespace TimeLogger.Controllers
         public TimesheetController(ITimeLoggerService timeLoggerService)
         {
             _timeLoggerService = timeLoggerService;
+        }
+
+        [HttpPost("helper/bulk")]
+        public IActionResult BulkLogTimes([FromBody] IList<LogTimeRequest> request)
+        {
+            if (request == null || request.Any(l => l.LogTime == null) || request.Any(l => l.LogAction == null))
+            {
+                return new JsonResult(new { message = "Invalid request" });
+            }
+
+            _timeLoggerService.BulkLogTimes(request);
+
+            return Ok();
         }
 
         [HttpDelete("delete/{id}")]

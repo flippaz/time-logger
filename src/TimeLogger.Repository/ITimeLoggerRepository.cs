@@ -6,6 +6,8 @@ namespace TimeLogger.Repository
 {
     public interface ITimeLoggerRepository
     {
+        void InsertLogTimes(List<Timesheet> request);
+
         void DeleteTime(int id);
 
         IEnumerable<Timesheet> GetTimesheet(DateTime startDate, DateTime endDate);

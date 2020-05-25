@@ -45,6 +45,13 @@ namespace TimeLogger.Repository
             _context.SaveChanges();
         }
 
+        public void InsertLogTimes(List<Timesheet> request)
+        {
+            _context.TimeSheets.AddRange(request);
+
+            _context.SaveChanges();
+        }
+
         public void UpdateLogTime(int id, DateTime logDateTime, string comment)
         {
             var timeSheet = _context.TimeSheets.SingleOrDefault(t => t.Id == id);
