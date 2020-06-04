@@ -57,6 +57,7 @@ namespace TimeLogger
                 .AddServiceOptions(Configuration)
                 .AddTimeLoggerService()
                 .AddRepository()
+                .AddPublicHolidayClient()
                 .AddSwagger();
 
             services.ConfigureSwaggerGen(options =>

@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System;
-using TimeLogger.Reference;
+﻿using System;
 
 namespace TimeLogger.Models
 {
@@ -12,5 +9,7 @@ namespace TimeLogger.Models
         public string LogAction { get; set; }
 
         public DateTime? LogTime { get; set; }
+
+        public bool? OverrideHolidays { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TimeLogger.Models;
 using TimeLogger.Services;
 
@@ -20,14 +21,14 @@ namespace TimeLogger.Controllers
         }
 
         [HttpPost("helper/bulk")]
-        public IActionResult BulkLogTimes([FromBody] IList<LogTimeRequest> request)
+        public async Task<IActionResult> BulkLogTimes([FromBody] IList<LogTimeRequest> request)
         {
             if (request == null || request.Any(l => l.LogTime == null) || request.Any(l => l.LogAction == null))
             {
                 return new JsonResult(new { message = "Invalid request" });
             }
 
-            _timeLoggerService.BulkLogTimes(request);
+            await _timeLoggerService.BulkLogTimes(request);
 
             return Ok();
         }
@@ -51,27 +52,27 @@ namespace TimeLogger.Controllers
         }
 
         [HttpPost("in")]
-        public IActionResult PostInTime([FromBody] LogTimeRequest request)
+        public async Task<IActionResult> PostInTime([FromBody] LogTimeRequest request)
         {
             if (request == null || request?.LogTime == null)
             {
                 request.LogTime = DateTime.Now.ToLocalTime();
             }
 
-            _timeLoggerService.LogInTime(request);
+            await _timeLoggerService.LogInTime(request);
 
             return Ok();
         }
 
         [HttpPost("out")]
-        public IActionResult PostOutTime([FromBody] LogTimeRequest request)
+        public async Task<IActionResult> PostOutTime([FromBody] LogTimeRequest request)
         {
             if (request == null || request?.LogTime == null)
             {
                 request.LogTime = DateTime.Now.ToLocalTime();
             }
 
-            _timeLoggerService.LogOutTime(request);
+            await _timeLoggerService.LogOutTime(request);
 
             return Ok();
         }

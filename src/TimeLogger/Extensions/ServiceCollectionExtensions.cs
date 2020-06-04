@@ -1,23 +1,31 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using Npgsql;
 using System;
 using System.IO;
 using System.Reflection;
+using TimeLogger.Clients;
 using TimeLogger.Repository;
 using TimeLogger.Services;
+using TimeLogger.Settings;
 
 namespace TimeLogger.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+        public static IServiceCollection AddPublicHolidayClient(this IServiceCollection services)
+        {
+            return services
+                .AddHttpClient()
+                .AddSingleton<IPublicHolidayClient, PublicHolidayClient>();
+        }
+
         public static IServiceCollection AddServiceOptions(this IServiceCollection services, IConfiguration configuration)
         {
             services
                 .AddOptions()
-                .Configure<RepositorySettings>(configuration);
+                .Configure<RepositorySettings>(configuration)
+                .Configure<PublicHolidaySettings>(configuration.GetSection("PublicHolidaySettings"));
 
             return services;
         }

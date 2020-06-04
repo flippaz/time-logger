@@ -26,6 +26,9 @@ services:
        - TimeLogger_ConnectionString__PostgresServer=postgres
        - TimeLogger_ConnectionString__PostgresUser=postgres
        - TimeLogger_ConnectionString__PostgresPassword=root
+       - "TimeLogger_PublicHolidaySettings__ApiUrl=https://data.gov.au/data/api/3/action/datastore_search"
+       - TimeLogger_PublicHolidaySettings__ResourceId=c4163dc4-4f5a-4cae-b787-43ef0fcf8d8b
+       - TimeLogger_PublicHolidaySettings__State=vic
 
     volumes:
       - ./logs:/app/logs

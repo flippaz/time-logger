@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using TimeLogger.Clients;
 using TimeLogger.Models;
 using TimeLogger.Reference;
 using TimeLogger.Repository;
@@ -10,26 +13,39 @@ namespace TimeLogger.Services
 {
     public class TimeLoggerService : ITimeLoggerService
     {
+        private readonly ILogger<TimeLoggerService> _logger;
+        private readonly IPublicHolidayClient _publicHolidayClient;
         private readonly ITimeLoggerRepository _repository;
 
-        public TimeLoggerService(ITimeLoggerRepository repository)
+        public TimeLoggerService(ITimeLoggerRepository repository, IPublicHolidayClient publicHolidayClient, ILogger<TimeLoggerService> logger)
         {
             _repository = repository;
+            _publicHolidayClient = publicHolidayClient;
+            _logger = logger;
         }
 
-        public void BulkLogTimes(IList<LogTimeRequest> request)
+        public async Task BulkLogTimes(IList<LogTimeRequest> requests)
         {
-            var timeSheet = request
-                .Select(r =>
-                    new Timesheet
-                    {
-                        Action = Enum.TryParse(r.LogAction, true, out LogAction action) ? action.ToString() : "Unknown",
-                        LogDateTime = (DateTime)r.LogTime,
-                        Comments = r.Comment
-                    })
-                .ToList();
+            var bulkTimeSheets = new List<Timesheet>();
 
-            _repository.InsertLogTimes(timeSheet);
+            foreach (LogTimeRequest request in requests)
+            {
+                if (Enum.TryParse(request.LogAction, true, out LogAction action)
+                    && !await CheckIsPublicHolidayOrWeekend((DateTime)request.LogTime, request.OverrideHolidays))
+                {
+                    bulkTimeSheets.Add
+                    (
+                        new Timesheet
+                        {
+                            Action = action.ToString(),
+                            LogDateTime = (DateTime)request.LogTime,
+                            Comments = request.Comment
+                        }
+                    );
+                }
+            }
+
+            _repository.InsertLogTimes(bulkTimeSheets);
         }
 
         public void DeleteTime(int id)
@@ -42,19 +58,48 @@ namespace TimeLogger.Services
             return _repository.GetTimesheet(startDate, endDate);
         }
 
-        public void LogInTime(LogTimeRequest request)
+        public async Task LogInTime(LogTimeRequest request)
         {
-            _repository.InsertLogTime((DateTime)request.LogTime, LogAction.LogIn.ToString());
+            if (!await CheckIsPublicHolidayOrWeekend((DateTime)request.LogTime, request.OverrideHolidays))
+            {
+                _repository.InsertLogTime((DateTime)request.LogTime, LogAction.LogIn.ToString());
+            }
         }
 
-        public void LogOutTime(LogTimeRequest request)
+        public async Task LogOutTime(LogTimeRequest request)
         {
-            _repository.InsertLogTime((DateTime)request.LogTime, LogAction.LogOut.ToString());
+            if (!await CheckIsPublicHolidayOrWeekend((DateTime)request.LogTime, request.OverrideHolidays))
+            {
+                _repository.InsertLogTime((DateTime)request.LogTime, LogAction.LogOut.ToString());
+            }
         }
 
         public void UpdateTime(int id, LogTimeRequest request)
         {
             _repository.UpdateLogTime(id, (DateTime)request.LogTime, request.Comment);
+        }
+
+        private async Task<bool> CheckIsPublicHolidayOrWeekend(DateTime dateTime, bool? overrideHolidaysWeekends)
+        {
+            if (overrideHolidaysWeekends ?? false)
+            {
+                return false;
+            }
+
+            if ((dateTime.DayOfWeek == DayOfWeek.Saturday) || (dateTime.DayOfWeek == DayOfWeek.Sunday))
+            {
+                return true;
+            }
+
+            var holidays = await _publicHolidayClient.GetHolidays();
+
+            if (holidays.Success)
+            {
+                _logger.LogInformation("Success!");
+                return holidays.Result.Records.Any(h => h.Date.Date == dateTime.Date);
+            }
+
+            throw new Exception("Error occurred");
         }
     }
 }
