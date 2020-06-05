@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
 WORKDIR /app
 
 # Copy src folder and build
-COPY . ./
+ADD . ./
 RUN dotnet publish -c Release -o out
 
 # Build runtime image
