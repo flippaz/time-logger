@@ -1,5 +1,5 @@
 # Time Logger
-Ability to log in and out times in to a database for timesheets.
+Ability to log in and out times in to a Postgres database for timesheets.
 
 ## Prerequisites
 Docker for [Windows or Linux](https://docs.docker.com/get-docker/)
