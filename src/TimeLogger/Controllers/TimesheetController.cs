@@ -20,15 +20,31 @@ namespace TimeLogger.Controllers
             _timeLoggerService = timeLoggerService;
         }
 
-        [HttpPost("helper/bulk")]
-        public async Task<IActionResult> BulkLogTimes([FromBody] IList<LogTimeRequest> request)
+        [HttpPost("helper/log-times")]
+        public async Task<IActionResult> LogMultipleTimes([FromBody] IList<LogTimeRequest> request)
         {
             if (request == null || request.Any(l => l.LogTime == null) || request.Any(l => l.LogAction == null))
             {
                 return new JsonResult(new { message = "Invalid request" });
             }
 
-            await _timeLoggerService.BulkLogTimes(request);
+            await _timeLoggerService.LogMultipleTimes(request);
+
+            return Ok();
+        }
+
+        [HttpPost("helper/bulk")]
+        public async Task<IActionResult> LogBulkTimes([FromBody] BulkLogTimesRequest request)
+        {
+            if (request == null)
+            {
+                return new JsonResult(new { message = "Invalid request" });
+            }
+
+            if (request.FromDateTime < request.ToDateTime)
+            {
+                await _timeLoggerService.BulkLogTimes(request);
+            }
 
             return Ok();
         }

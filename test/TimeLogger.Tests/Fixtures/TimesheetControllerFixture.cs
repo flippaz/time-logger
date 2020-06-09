@@ -26,6 +26,23 @@ namespace TimeLogger.Tests.Fixtures
 
         public List<Timesheet> Timesheets { get; set; }
 
+        public async Task<IActionResult> LogBulkTimes(BulkLogTimesRequest request)
+        {
+            IServiceProvider provider = TestServiceProvider.CreateProvider(
+                services => _setup(services));
+
+            using IServiceScope scope = provider.CreateScope();
+
+            var result = await scope.ServiceProvider
+                .GetRequiredService<TimesheetController>()
+                .LogBulkTimes(request);
+
+            TimeLoggerContext dbContext = scope.ServiceProvider.GetRequiredService<TimeLoggerContext>();
+
+            Timesheets.AddRange(dbContext.TimeSheets);
+            return result;
+        }
+
         public async Task<IActionResult> PostInTime(LogTimeRequest request)
         {
             IServiceProvider provider = TestServiceProvider.CreateProvider(

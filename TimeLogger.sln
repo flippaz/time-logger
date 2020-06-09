@@ -13,11 +13,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
 		Dockerfile = Dockerfile
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{1E51F0F8-2DCD-4C98-82F5-6923A1D2828B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeLogger.Tests", "test\TimeLogger.Tests\TimeLogger.Tests.csproj", "{AC8A73E2-F7E5-4790-896A-FA861E747FD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeLogger.Tests", "test\TimeLogger.Tests\TimeLogger.Tests.csproj", "{AC8A73E2-F7E5-4790-896A-FA861E747FD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

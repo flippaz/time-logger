@@ -24,7 +24,43 @@ namespace TimeLogger.Services
             _logger = logger;
         }
 
-        public async Task BulkLogTimes(IList<LogTimeRequest> requests)
+        public async Task BulkLogTimes(BulkLogTimesRequest request)
+        {
+            foreach (DateTime day in EachDay(request.FromDateTime, request.ToDateTime))
+            {
+                await LogInTime(new LogTimeRequest
+                {
+                    LogTime = new DateTime(day.Year, day.Month, day.Day, 9, 0, 0),
+                    OverrideHolidays = request.OverrideHolidays
+                });
+
+                await LogOutTime(new LogTimeRequest
+                {
+                    LogTime = new DateTime(day.Year, day.Month, day.Day, 17, 0, 0),
+                    OverrideHolidays = request.OverrideHolidays
+                });
+            }
+        }
+
+        public void DeleteTime(int id)
+        {
+            _repository.DeleteTime(id);
+        }
+
+        public IEnumerable<Timesheet> GetTimesheet(DateTime startDate, DateTime endDate)
+        {
+            return _repository.GetTimesheet(startDate, endDate);
+        }
+
+        public async Task LogInTime(LogTimeRequest request)
+        {
+            if (!await CheckIsPublicHolidayOrWeekend((DateTime)request.LogTime, request.OverrideHolidays))
+            {
+                _repository.InsertLogTime((DateTime)request.LogTime, LogAction.LogIn.ToString());
+            }
+        }
+
+        public async Task LogMultipleTimes(IList<LogTimeRequest> requests)
         {
             var bulkTimeSheets = new List<Timesheet>();
 
@@ -46,24 +82,6 @@ namespace TimeLogger.Services
             }
 
             _repository.InsertLogTimes(bulkTimeSheets);
-        }
-
-        public void DeleteTime(int id)
-        {
-            _repository.DeleteTime(id);
-        }
-
-        public IEnumerable<Timesheet> GetTimesheet(DateTime startDate, DateTime endDate)
-        {
-            return _repository.GetTimesheet(startDate, endDate);
-        }
-
-        public async Task LogInTime(LogTimeRequest request)
-        {
-            if (!await CheckIsPublicHolidayOrWeekend((DateTime)request.LogTime, request.OverrideHolidays))
-            {
-                _repository.InsertLogTime((DateTime)request.LogTime, LogAction.LogIn.ToString());
-            }
         }
 
         public async Task LogOutTime(LogTimeRequest request)
@@ -100,6 +118,12 @@ namespace TimeLogger.Services
             }
 
             throw new Exception("Error occurred");
+        }
+
+        private IEnumerable<DateTime> EachDay(DateTime from, DateTime through)
+        {
+            for (var day = from.Date; day.Date <= through.Date; day = day.AddDays(1))
+                yield return day;
         }
     }
 }

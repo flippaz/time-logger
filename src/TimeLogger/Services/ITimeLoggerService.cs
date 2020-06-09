@@ -8,13 +8,15 @@ namespace TimeLogger.Services
 {
     public interface ITimeLoggerService
     {
-        Task BulkLogTimes(IList<LogTimeRequest> request);
+        Task BulkLogTimes(BulkLogTimesRequest request);
 
         void DeleteTime(int id);
 
         IEnumerable<Timesheet> GetTimesheet(DateTime startDate, DateTime endDate);
 
         Task LogInTime(LogTimeRequest request);
+
+        Task LogMultipleTimes(IList<LogTimeRequest> request);
 
         Task LogOutTime(LogTimeRequest request);
 
